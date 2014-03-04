@@ -187,16 +187,19 @@
 	NSUInteger byteIndex = 0;
 	for (int counter = 0; counter < numPixelBytes; counter += 3)
 	{
-		if (pixelDataWithAlpha[byteIndex] == 0)
+		
+		if (counter > 0 && (counter % byteIndex) % 18 == 0)
 		{
 			// TODO: Blank space handling.
 			// This handles weird blank space. I think if it's if the image bounds are under a certain amount. Right now it's just detecting a red of 0; that will have to change
-			// ByteIndex: 24 - 63, 88
+			// ByteIndex: 24 - 63, 88, 152
+			// Counter: 18, 36, 54
 			byteIndex += 40;
 		}
 		UInt8 red   = pixelDataWithAlpha[byteIndex];
         UInt8 green = pixelDataWithAlpha[byteIndex + 1];
 		UInt8 blue  = pixelDataWithAlpha[byteIndex + 2];
+		
 		
 		NSUInteger pixelIndex = counter / 3;
 		NSUInteger row = pixelIndex / pixelWidth;
