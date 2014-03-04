@@ -64,7 +64,8 @@
 - (id)init
 {
 	self = [super init];
-	if (self) {
+	if (self)
+	{
 		// Allocate any permanent resource required by the plug-in.
 		_socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
 		_socket.delegate = self;
@@ -86,7 +87,8 @@
 	// Return NO in case of fatal failure (this will prevent rendering of the composition to start).
 	NSError *error;
 	//	[self.socket connectToHost:@"localhost" onPort:7890 viaInterface:@"localhost" withTimeout:5 error:&error];
-	if (error){
+	if (error)
+	{
 		NSLog(@"error connecting to fc: %@", error);
 	}
 	
@@ -105,7 +107,8 @@
 	//	}
 	NSError *error;
 	[self.socket connectToHost:[self.settingsViewController host] onPort:[self.settingsViewController port] viaInterface:@"localhost" withTimeout:5 error:&error];
-	if (error){
+	if (error)
+	{
 		NSLog(@"error connecting to fc: %@", error);
 	}
 }
@@ -137,7 +140,8 @@
 		return NO;
 	
 	/* Get a buffer representation from the image in its native colorspace */
-	if(![qcImage lockBufferRepresentationWithPixelFormat:pixelFormat colorSpace:colorSpace forBounds:[qcImage imageBounds]]){
+	if(![qcImage lockBufferRepresentationWithPixelFormat:pixelFormat colorSpace:colorSpace forBounds:[qcImage imageBounds]])
+	{
 		return YES;
 	}
 	
@@ -158,8 +162,8 @@
 							   kCGRenderingIntentDefault);	// Rendering intent
 	CGDataProviderRelease(dataProvider);
 	
-	NSImage *nsImage = [NSImage alloc];
-    nsImage = [nsImage initWithCGImage: cgImageRef size: [qcImage imageBounds].size];
+//	NSImage *nsImage = [NSImage alloc];
+//    nsImage = [nsImage initWithCGImage: cgImageRef size: [qcImage imageBounds].size];
 	
 	
 	CFDataRef data = CGDataProviderCopyData(CGImageGetDataProvider(cgImageRef));
@@ -181,10 +185,12 @@
 	isZigZag = YES;
 	
 	NSUInteger byteIndex = 0;
-	for (int counter = 0; counter < numPixelBytes; counter += 3) {
-		
-		if (pixelDataWithAlpha[byteIndex] == 0){
-			// This handles weird blank space. I think if it's if the image bounds are under a certain amount.
+	for (int counter = 0; counter < numPixelBytes; counter += 3)
+	{
+		if (pixelDataWithAlpha[byteIndex] == 0)
+		{
+			// TODO: Blank space handling.
+			// This handles weird blank space. I think if it's if the image bounds are under a certain amount. Right now it's just detecting a red of 0; that will have to change
 			// ByteIndex: 24 - 63, 88
 			byteIndex += 40;
 		}
@@ -192,44 +198,48 @@
         UInt8 green = pixelDataWithAlpha[byteIndex + 1];
 		UInt8 blue  = pixelDataWithAlpha[byteIndex + 2];
 		
-		
 		NSUInteger pixelIndex = counter / 3;
-		BOOL altRow = 0;
-		if (counter > 0){
-			altRow = (pixelIndex / [self.settingsViewController pixelWidth] % 2);
-		}
+		NSUInteger row = pixelIndex / pixelWidth;
+		BOOL isAltRow = (row % 2);
+		
 		NSUInteger indexToWrite;
-		if (isZigZag && altRow){
-			indexToWrite = (pixelIndex*3) - pixelWidth % pixelWidth;
-		}else{
+		if (isZigZag && isAltRow)
+		{
+			NSUInteger pixelsFromEndOfRow = (pixelIndex % pixelWidth);
+			indexToWrite = (row * pixelWidth * 3) - (pixelsFromEndOfRow * 3) + (pixelWidth * 3) - 3;
+		}
+		else
+		{
 			indexToWrite = counter;
 		}
-		switch (pixelOrder) {
+		
+		switch (pixelOrder)
+		{
 			case STKPixelColorOrderRGB:
-				pixelData[indexToWrite]   = red;
-				pixelData[indexToWrite+1] = green;
-				pixelData[indexToWrite+2] = blue;
+				pixelData[indexToWrite]		= red;
+				pixelData[indexToWrite + 1] = green;
+				pixelData[indexToWrite + 2] = blue;
 				break;
 			case STKPixelColorOrderBRG:
-				pixelData[indexToWrite]   = blue;
-				pixelData[indexToWrite+1] = red;
-				pixelData[indexToWrite+2] = green;
+				pixelData[indexToWrite]		= blue;
+				pixelData[indexToWrite + 1] = red;
+				pixelData[indexToWrite + 2] = green;
 				break;
 			case STKPixelColorOrderGBR:
-				pixelData[indexToWrite]   = green;
-				pixelData[indexToWrite+1] = blue;
-				pixelData[indexToWrite+2] = red;
+				pixelData[indexToWrite]		= green;
+				pixelData[indexToWrite + 1] = blue;
+				pixelData[indexToWrite + 2] = red;
 				break;
 				
 			default:
 				break;
 		}
-//		if (counter == )
+		
 		byteIndex += 4;
-		;
 	}
 	
-	if (self.socket.connectedHost){
+	if (self.socket.connectedHost)
+	{
 		UInt8 channel = 0;
 		const UInt8 command = 0x00;
 		UInt8 length1 = 0;
