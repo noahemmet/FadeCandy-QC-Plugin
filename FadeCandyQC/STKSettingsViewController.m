@@ -52,9 +52,9 @@
 	}
 }
 
--(STKPixelColorOrder)pixelOrder{
-	return [self.pixelOrderCell state];
-}
+//-(STKPixelOrder)pixelOrder{
+//	return [self.pixelOrderCell state];
+//}
 
 -(BOOL)isZigzag{
 	return [self.zigzagCheckbox state];

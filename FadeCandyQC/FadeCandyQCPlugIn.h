@@ -7,15 +7,15 @@
 //
 
 #import <Quartz/Quartz.h>
-typedef NS_ENUM(NSInteger, STKPixelColorOrder) {
-    STKPixelColorOrderRGB,
-    STKPixelColorOrderBRG,
-    STKPixelColorOrderGBR,
+
+typedef NS_ENUM(NSInteger, STKPixelOrder) {
+    STKPixelOrderRGB,
+    STKPixelOrderBRG,
+    STKPixelOrderGBR,
 };
 
 @interface FadeCandyQCPlugIn : QCPlugIn
 
 @property id<QCPlugInInputImageSource> inputImage;
 
-// Settings
 @end

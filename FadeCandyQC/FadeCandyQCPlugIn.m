@@ -20,7 +20,8 @@
 @property GCDAsyncSocket *socket;
 @property STKSettingsViewController *settingsViewController;
 // Settings
-@property STKPixelColorOrder pixelOrder;
+@property STKPixelOrder pixelOrder;
+@property BOOL isZigzag;
 @property NSString *host;
 @property uint16_t port;
 @end
@@ -28,7 +29,6 @@
 @implementation FadeCandyQCPlugIn
 @dynamic inputImage;
 // Here you need to declare the input / output properties as dynamic as Quartz Composer will handle their implementation
-//@dynamic inputFoo, outputBar;
 
 + (NSDictionary *)attributes
 {
@@ -46,7 +46,7 @@
 }
 
 +(NSArray *)plugInKeys{
-	return @[@"pixelOrder", @"host", @"port"];
+	return @[@"pixelOrder", @"isZigzag", @"host", @"port"];
 }
 
 + (QCPlugInExecutionMode)executionMode
@@ -80,6 +80,10 @@
 #pragma mark - Execution
 
 @implementation FadeCandyQCPlugIn (Execution)
+
+-(void)setPixelOrder:(STKPixelOrder)pixelOrder{
+	_pixelOrder = pixelOrder;
+}
 
 - (BOOL)startExecution:(id <QCPlugInContext>)context
 {
@@ -169,19 +173,20 @@
 	CFDataRef data = CGDataProviderCopyData(CGImageGetDataProvider(cgImageRef));
 	const UInt8 *pixelDataWithAlpha = CFDataGetBytePtr(data);
 	
-	
 	NSUInteger numPixels = [self.settingsViewController pixelWidth] * [self.settingsViewController pixelHeight];
 	NSUInteger numPixelBytes = numPixels * 3;
 	
 	UInt8 pixelData[numPixelBytes];
 	
 	NSUInteger pixelWidth = [self.settingsViewController pixelWidth];
-	NSUInteger pixelHeight = [self.settingsViewController pixelHeight];
-	BOOL isZigZag = [self.settingsViewController isZigzag];
-	STKPixelColorOrder pixelOrder = [self.settingsViewController pixelOrder];
+	//	NSUInteger pixelHeight = [self.settingsViewController pixelHeight];
+//	BOOL isZigZag = [self.settingsViewController isZigzag];
+	BOOL isZigZag = self.isZigzag;
+//	STKPixelOrder pixelOrder = [self.settingsViewController pixelOrder];
+	STKPixelOrder pixelOrder = self.pixelOrder;
 	
-	// Manual override
-	pixelOrder = STKPixelColorOrderBRG;
+	// Manual debug override
+	pixelOrder = STKPixelOrderBRG;
 	isZigZag = YES;
 	
 	NSUInteger byteIndex = 0;
@@ -191,7 +196,7 @@
 		if (counter > 0 && (counter % byteIndex) % 18 == 0)
 		{
 			// TODO: Blank space handling.
-			// This handles weird blank space. I think if it's if the image bounds are under a certain amount. Right now it's just detecting a red of 0; that will have to change
+			// This handles weird blank space. I think if it's if the image bounds are under a certain amount. Right now it's just detecting a red of 0; that will have to change.
 			// ByteIndex: 24 - 63, 88, 152
 			// Counter: 18, 36, 54
 			byteIndex += 40;
@@ -218,17 +223,17 @@
 		
 		switch (pixelOrder)
 		{
-			case STKPixelColorOrderRGB:
+			case STKPixelOrderRGB:
 				pixelData[indexToWrite]		= red;
 				pixelData[indexToWrite + 1] = green;
 				pixelData[indexToWrite + 2] = blue;
 				break;
-			case STKPixelColorOrderBRG:
+			case STKPixelOrderBRG:
 				pixelData[indexToWrite]		= blue;
 				pixelData[indexToWrite + 1] = red;
 				pixelData[indexToWrite + 2] = green;
 				break;
-			case STKPixelColorOrderGBR:
+			case STKPixelOrderGBR:
 				pixelData[indexToWrite]		= green;
 				pixelData[indexToWrite + 1] = blue;
 				pixelData[indexToWrite + 2] = red;
@@ -304,9 +309,25 @@
 	return self.settingsViewController;
 }
 
-//+(NSArray *)plugInKeys{
-//	return @[@"pixelOrder"];
+//- (id) serializedValueForKey:(NSString*)key
+//{
+//    if([key isEqualToString:@"pixelOrder"])
+//        return @(self.pixelOrder);
+//    // Ensure this has a data method
+//    return [super serializedValueForKey:key];
 //}
+//
+//- (void) setSerializedValue:(id)serializedValue
+//                     forKey:(NSString*)key
+//{
+//    // System config is subclass of NSObject.
+//    // It's up to you to keep track of the version.
+//    if([key isEqualToString:@"pixelOrder"])
+//        self.pixelOrder = [serializedValue integerValue];
+//    else
+//        [super setSerializedValue:serializedValue forKey:key];
+//}
+
 @end
 
 @implementation FadeCandyQCPlugIn (Network)

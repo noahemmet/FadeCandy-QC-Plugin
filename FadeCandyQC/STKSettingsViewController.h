@@ -18,5 +18,5 @@
 -(NSUInteger)pixelWidth;
 -(NSUInteger)pixelHeight;
 -(BOOL)isZigzag;
--(STKPixelColorOrder)pixelOrder;
+//-(STKPixelOrder)pixelOrder;
 @end

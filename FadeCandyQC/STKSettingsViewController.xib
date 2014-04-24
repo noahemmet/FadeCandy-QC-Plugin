@@ -90,28 +90,43 @@
                                 <rect key="frame" x="73" y="12" width="64" height="58"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                <size key="cellSize" width="64" height="18"/>
+                                <size key="cellSize" width="48" height="18"/>
                                 <size key="intercellSpacing" width="4" height="2"/>
                                 <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="mps-Kh-8c5">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <binding destination="-2" name="value" keyPath="plugIn.pixelOrder" id="ywd-Yu-GP3"/>
+                                    </connections>
                                 </buttonCell>
                                 <cells>
                                     <column>
-                                        <buttonCell type="radio" title="RGB" imagePosition="left" alignment="left" state="on" tag="1" inset="2" id="2hN-7j-ewM">
+                                        <buttonCell type="radio" title="RGB" imagePosition="left" alignment="left" tag="1" inset="2" id="2hN-7j-ewM">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
+                                            <connections>
+                                                <binding destination="-2" name="value" keyPath="plugIn.pixelOrder" id="ckn-o7-Wfx"/>
+                                            </connections>
                                         </buttonCell>
-                                        <buttonCell type="radio" title="GBR" imagePosition="left" alignment="left" inset="2" id="S1j-pV-5LF">
+                                        <buttonCell type="radio" title="GBR" imagePosition="left" alignment="left" state="on" inset="2" id="S1j-pV-5LF">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
+                                            <connections>
+                                                <binding destination="-2" name="value" keyPath="plugIn.pixelOrder" id="riN-d8-TBB"/>
+                                            </connections>
                                         </buttonCell>
                                         <buttonCell type="radio" title="BRG" imagePosition="left" alignment="left" inset="2" id="td1-95-k7e">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
+                                            <connections>
+                                                <binding destination="-2" name="value" keyPath="plugIn.pixelOrder" id="w9X-KT-9hw"/>
+                                            </connections>
                                         </buttonCell>
                                     </column>
                                 </cells>
+                                <connections>
+                                    <binding destination="-2" name="selectedObject" keyPath="plugIn.pixelOrder" id="Mua-LL-che"/>
+                                </connections>
                             </matrix>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="8GC-Mf-yW5">
                                 <rect key="frame" x="136" y="108" width="59" height="20"/>
@@ -136,7 +151,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="ZEA-gn-rLN">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
+                                    <font key="font" metaFont="menu"/>
                                     <menu key="menu" title="OtherViews" id="ep6-wB-Qjv">
                                         <items>
                                             <menuItem title="Rectangle" id="5mG-j9-jf4"/>
@@ -161,6 +176,9 @@
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <binding destination="-2" name="value" keyPath="plugIn.isZigzag" id="Cap-fh-3cd"/>
+                                </connections>
                             </button>
                         </subviews>
                     </view>
@@ -169,5 +187,6 @@
                 </box>
             </subviews>
         </customView>
+        <userDefaultsController representsSharedInstance="YES" id="QRU-EG-BMq"/>
     </objects>
 </document>
