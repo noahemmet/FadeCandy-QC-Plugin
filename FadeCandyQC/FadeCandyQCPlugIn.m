@@ -151,7 +151,6 @@
 	
 	/* Create CGImage from buffer */
 	dataProvider = CGDataProviderCreateWithData(NULL, [qcImage bufferBaseAddress], ([qcImage bufferPixelsHigh] * [qcImage bufferBytesPerRow]), NULL);
-	//	CGImageRef cgImageRef = CGImageCreate([qcImage bufferPixelsWide], [qcImage bufferPixelsHigh], 8, (pixelFormat == QCPlugInPixelFormatI8 ? 8 : 32), [qcImage bufferBytesPerRow], colorSpace, (pixelFormat == QCPlugInPixelFormatI8 ? 0 : kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host), dataProvider, NULL, false, kCGRenderingIntentDefault);
 	CGImageRef cgImageRef;
 	cgImageRef = CGImageCreate([qcImage bufferPixelsWide],	// Width
 							   [qcImage bufferPixelsHigh],	// Height
@@ -159,13 +158,14 @@
 							   32,							// Bits per pixel
 							   [qcImage bufferBytesPerRow],	// Bytes per row
 							   colorSpace,					// Colorspace
-							   kCGImageAlphaNone,			// BitmapInfo
+							   kCGBitmapAlphaInfoMask,			// BitmapInfo
 							   dataProvider,				// Data provider
 							   NULL,							// Decode
 							   false,						// Should interpolate
 							   kCGRenderingIntentDefault);	// Rendering intent
 	CGDataProviderRelease(dataProvider);
 	
+	// Use this to create an image for easier debugging
 //	NSImage *nsImage = [NSImage alloc];
 //    nsImage = [nsImage initWithCGImage: cgImageRef size: [qcImage imageBounds].size];
 	
@@ -185,7 +185,7 @@
 //	STKPixelOrder pixelOrder = [self.settingsViewController pixelOrder];
 	STKPixelOrder pixelOrder = self.pixelOrder;
 	
-	// Manual debug override
+	// Manual debug override. Replace this once the settings vc is hooked up.
 	pixelOrder = STKPixelOrderBRG;
 	isZigZag = YES;
 	
@@ -196,9 +196,7 @@
 		if (counter > 0 && (counter % byteIndex) % 18 == 0)
 		{
 			// TODO: Blank space handling.
-			// This handles weird blank space. I think if it's if the image bounds are under a certain amount. Right now it's just detecting a red of 0; that will have to change.
-			// ByteIndex: 24 - 63, 88, 152
-			// Counter: 18, 36, 54
+			// This handles the weird blank space that's been showing up. I think if it's if the image bounds are under a certain value. Right now we're just looking for a red of 0; we'll need to update this code once we have a large LED grid to test with.
 			byteIndex += 40;
 		}
 		UInt8 red   = pixelDataWithAlpha[byteIndex];
@@ -263,17 +261,7 @@
 			[self.socket writeData:bytes withTimeout:5 tag:1];
 		}
 	}
-	//	free(colors);
-	
-	/*
-	 Called by Quartz Composer whenever the plug-in instance needs to execute.
-	 Only read from the plug-in inputs and produce a result (by writing to the plug-in outputs or rendering to the destination OpenGL context) within that method and nowhere else.
-	 Return NO in case of failure during the execution (this will prevent rendering of the current frame to complete).
-	 
-	 The OpenGL context for rendering can be accessed and defined for CGL macros using:
-	 CGLContextObj cgl_ctx = [context CGLContextObj];
-	 */
-	
+		
 	return YES;
 }
 
@@ -308,7 +296,7 @@
 -(QCPlugInViewController *)createViewController{
 	return self.settingsViewController;
 }
-
+// We'll uncomment this code once the settings vc is hooked up
 //- (id) serializedValueForKey:(NSString*)key
 //{
 //    if([key isEqualToString:@"pixelOrder"])
@@ -338,6 +326,7 @@
 {
 	//    NSLog(@"Cool, I'm connected! That was easy.");
 	if (self.socket.connectedHost){
+		// Testing
 		//		UInt8 bytes[10] = {0,0x00,0,6,000,000,000,100,5,5};
 		//		NSData *data = [NSData dataWithBytes:bytes length:10];
 		//		[self.socket writeData:data withTimeout:5 tag:1];
